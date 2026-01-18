@@ -6,14 +6,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.routes import users
 from app.db.mongo_db import MongoDB
+from app.db.redis import RedisManager
 from config import config
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    await MongoDB.get_database()  # type: ignore
+    await MongoDB.get_database()
+    await RedisManager.get_client()
     yield
     await MongoDB.close()
+    await RedisManager.close()
 
 
 app = FastAPI(
@@ -36,7 +39,7 @@ app.add_middleware(
 app.include_router(users.router, prefix=f"/api/v1/{config.SERVICE_NAME}")
 
 if __name__ == "__main__":
-    uvicorn.run(  # type: ignore
+    uvicorn.run(
         "main:app",
         host="0.0.0.0",
         port=8000,
