@@ -1,8 +1,9 @@
-from typing import Any, Dict, Optional
-from datetime import datetime, timedelta, UTC
 import hashlib
-import jwt
+from datetime import UTC, datetime, timedelta
+from typing import Any
+
 import bcrypt
+import jwt
 
 from config import config
 
@@ -43,8 +44,8 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(
     subject: str | int,
-    expires_delta: Optional[timedelta] = None,
-    extra_claims: Optional[Dict[str, Any]] = None,
+    expires_delta: timedelta | None = None,
+    extra_claims: dict[str, Any] | None = None,
 ) -> str:
     """
     Create a JWT access token.
@@ -60,7 +61,7 @@ def create_access_token(
             minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES
         )
 
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "sub": str(subject),
         "exp": expire,
         "iat": datetime.now(UTC),

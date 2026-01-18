@@ -1,4 +1,3 @@
-from typing import Optional
 import redis.asyncio as redis
 from redis.asyncio import ConnectionPool
 
@@ -7,8 +6,8 @@ from config import config
 
 
 class RedisManager:
-    _pool: Optional[ConnectionPool] = None
-    _cache_backend: Optional[CacheBackend] = None
+    _pool: ConnectionPool | None = None
+    _cache_backend: CacheBackend | None = None
 
     @classmethod
     def get_pool(cls) -> ConnectionPool:

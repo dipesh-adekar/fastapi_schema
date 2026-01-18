@@ -1,7 +1,8 @@
-from datetime import datetime, UTC
-from typing import List, Optional, Any
+from datetime import UTC, datetime
+from typing import Any
+
 from bson import ObjectId
-from pydantic import BaseModel, Field, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class UserResponse(BaseModel):
@@ -10,7 +11,7 @@ class UserResponse(BaseModel):
     id: str = Field(alias="_id")
     username: str
     email: EmailStr
-    full_name: Optional[str]
+    full_name: str | None
     is_active: bool
     created_at: datetime
     updated_at: datetime
@@ -32,6 +33,6 @@ class PaginatedUserResponseV1(BaseModel):
     """Paginated user response for API v1."""
 
     success: bool = True
-    data: List[UserResponse]
-    pagination: Optional[dict] = None
+    data: list[UserResponse]
+    pagination: dict | None = None
     timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))

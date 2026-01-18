@@ -1,11 +1,11 @@
-import asyncio
 import hashlib
 import inspect
-import redis
 import pickle
-from datetime import datetime, timedelta
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable, Optional, Union
+from typing import Any
+
+import redis
 
 from config import config
 
@@ -14,7 +14,7 @@ class CacheBackend:
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
 
-    async def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Any | None:
         """Get value from cache."""
         try:
             data = await self.redis.get(key)
@@ -24,7 +24,7 @@ class CacheBackend:
             return None
         return None
 
-    async def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    async def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
         """Set value in cache."""
         try:
             ttl = ttl or config.CACHE_TTL
@@ -85,9 +85,9 @@ def cache_key_builder(func: Callable, *args, **kwargs) -> str:
 
 
 def cache_response(
-    ttl: Optional[int] = None,
+    ttl: int | None = None,
     key_prefix: str = "cache",
-    exclude_args: Optional[list] = None,
+    exclude_args: list | None = None,
 ):
     """
     Decorator for caching function responses.
