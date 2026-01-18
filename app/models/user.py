@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 from app.models.base import BaseMongoModel
 
@@ -14,11 +13,11 @@ class UserRole(str, Enum):
 class User(BaseMongoModel):
     username: str
     email: str
-    full_name: Optional[str] = None
+    full_name: str | None = None
     hashed_password: str
     is_active: bool = True
     role: UserRole = UserRole.USER
-    last_login: Optional[datetime] = None
+    last_login: datetime | None = None
 
     class Config:
         collection = "users"

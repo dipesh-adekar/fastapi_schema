@@ -9,7 +9,8 @@ from config import config
 
 @pytest.mark.asyncio
 async def test_create_user(
-    async_client: AsyncClient, mongodb: AsyncIOMotorDatabase[Any]  # type: ignore
+    async_client: AsyncClient,
+    mongodb: AsyncIOMotorDatabase[Any],  # type: ignore
 ) -> None:
     payload = {
         "username": "testuser",
@@ -19,7 +20,7 @@ async def test_create_user(
     }
 
     response = await async_client.post(
-        "/api/v1/{}/users/register".format(config.SERVICE_NAME), json=payload
+        f"/api/v1/{config.SERVICE_NAME}/users/register", json=payload
     )
 
     assert response.status_code == 200

@@ -1,7 +1,8 @@
-from datetime import datetime, timezone
-from typing import Optional, Annotated, Any
+from datetime import UTC, datetime
+from typing import Annotated, Any
+
 from bson import ObjectId
-from pydantic import BaseModel, Field, BeforeValidator, ConfigDict, field_serializer
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, field_serializer
 
 
 def validate_object_id(v: Any) -> ObjectId:
@@ -24,12 +25,12 @@ class BaseMongoModel(BaseModel):
         json_schema_extra={"example": {}},
     )
 
-    id: Optional[PyObjectId] = Field(default=None, alias="_id")
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    id: PyObjectId | None = Field(default=None, alias="_id")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     @field_serializer("id", when_used="json")
-    def serialize_id(self, value: Optional[ObjectId]) -> Optional[str]:
+    def serialize_id(self, value: ObjectId | None) -> str | None:
         if value is None:
             return None
         return str(value)

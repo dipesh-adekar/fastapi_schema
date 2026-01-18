@@ -1,12 +1,13 @@
-from typing import Optional, Any
+from typing import Any
+
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase  # type: ignore
 
 from config import config
 
 
 class MongoDB:
-    _client: Optional[AsyncIOMotorClient[Any]] = None  # type: ignore[assignment]
-    _database: Optional[AsyncIOMotorDatabase[Any]] = None  # type: ignore[assignment]
+    _client: AsyncIOMotorClient[Any] | None = None  # type: ignore[assignment]
+    _database: AsyncIOMotorDatabase[Any] | None = None  # type: ignore[assignment]
 
     @classmethod
     async def get_client(cls) -> AsyncIOMotorClient[Any]:  # type: ignore

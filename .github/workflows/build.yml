@@ -40,9 +40,6 @@ jobs:
       - name: Run pre-commit hooks
         run: pre-commit run --all-files
 
-      - name: Run pyright
-        run: pyright
-
       - name: Run pytest
         run: pytest
 

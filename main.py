@@ -1,15 +1,16 @@
 from contextlib import asynccontextmanager
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
-import uvicorn
 
-from config import config
+import uvicorn
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.v1.routes import users
 from app.db.mongo_db import MongoDB
+from config import config
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     await MongoDB.get_database()  # type: ignore
     yield
     await MongoDB.close()
@@ -19,7 +20,7 @@ app = FastAPI(
     title="Sample App",
     description="This is a sample app.",
     version="1.0.0",
-    docs_url="/api/v1/{}/docs".format(config.SERVICE_NAME),
+    docs_url=f"/api/v1/{config.SERVICE_NAME}/docs",
     lifespan=lifespan,
 )
 
@@ -32,7 +33,7 @@ app.add_middleware(
     expose_headers=["X-API-Version", "X-API-Version-Status"],
 )
 
-app.include_router(users.router, prefix="/api/v1/{}".format(config.SERVICE_NAME))
+app.include_router(users.router, prefix=f"/api/v1/{config.SERVICE_NAME}")
 
 if __name__ == "__main__":
     uvicorn.run(  # type: ignore

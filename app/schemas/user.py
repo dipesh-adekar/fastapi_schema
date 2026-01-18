@@ -1,12 +1,10 @@
-from typing import Optional
-
 from pydantic import BaseModel, EmailStr, field_validator
 
 
 class UserBase(BaseModel):
     username: str
     email: EmailStr
-    full_name: Optional[str] = None
+    full_name: str | None = None
 
 
 class UserCreate(UserBase):

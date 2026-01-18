@@ -1,5 +1,6 @@
-from datetime import datetime, timezone
-from typing import Optional, Any
+from datetime import UTC, datetime
+from typing import Any
+
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorDatabase  # type: ignore
 
@@ -16,7 +17,7 @@ class UserService:
         collection_name: str = user_config.collection
         self.collection = db[collection_name]  # type: ignore
 
-    async def get_user_by_id(self, user_id: str) -> Optional[User]:
+    async def get_user_by_id(self, user_id: str) -> User | None:
         """Get user by ID with caching."""
         user_data: Any = await self.collection.find_one({"_id": ObjectId(user_id)})  # type: ignore
         if user_data:
@@ -28,8 +29,8 @@ class UserService:
 
         user_dict = user_create.model_dump(exclude={"password"})
         user_dict["hashed_password"] = user_create.password
-        user_dict["created_at"] = datetime.now(timezone.utc)
-        user_dict["updated_at"] = datetime.now(timezone.utc)
+        user_dict["created_at"] = datetime.now(UTC)
+        user_dict["updated_at"] = datetime.now(UTC)
         result: Any = await self.collection.insert_one(user_dict)  # type: ignore
 
         user = await self.get_user_by_id(str(result.inserted_id))  # type: ignore

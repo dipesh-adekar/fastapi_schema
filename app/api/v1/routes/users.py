@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase  # type: ignore
 
 from app.db.mongo_db import get_mongodb  # type: ignore
-from app.services.user_service import UserService
 from app.schemas.user import UserCreate
+from app.services.user_service import UserService
 
 router = APIRouter(
     prefix="/users",

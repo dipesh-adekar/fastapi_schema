@@ -1,20 +1,21 @@
-import pytest
-import pytest_asyncio
 import asyncio
 import sys
-from typing import Any, AsyncGenerator
+from collections.abc import AsyncGenerator
 from pathlib import Path
+from typing import Any
+
+import pytest
+import pytest_asyncio
 from httpx import AsyncClient
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase  # type: ignore
-
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 
-from main import app  # noqa: E402
-from config import config  # noqa: E402
 from app.db.mongo_db import get_mongodb  # noqa: E402  # type: ignore
+from config import config  # noqa: E402
+from main import app  # noqa: E402
 
 
 @pytest.fixture(scope="session")
@@ -31,7 +32,7 @@ async def mongodb() -> AsyncGenerator[AsyncIOMotorDatabase[Any], None]:  # type:
     yield db
     try:
         collections: Any = await db.list_collection_names()  # type: ignore
-        for collection_name: Any in collections:  # type: ignore
+        for collection_name in collections:
             await db.drop_collection(collection_name)  # type: ignore
     except Exception:
         pass
@@ -40,7 +41,9 @@ async def mongodb() -> AsyncGenerator[AsyncIOMotorDatabase[Any], None]:  # type:
 
 
 @pytest_asyncio.fixture
-async def async_client(mongodb: AsyncIOMotorDatabase[Any]) -> AsyncGenerator[AsyncClient, None]:  # type: ignore
+async def async_client(
+    mongodb: AsyncIOMotorDatabase[Any],
+) -> AsyncGenerator[AsyncClient, None]:  # type: ignore
     async def override_get_mongodb() -> AsyncIOMotorDatabase[Any]:  # type: ignore
         return mongodb  # type: ignore
 
